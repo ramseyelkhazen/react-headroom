@@ -22,6 +22,7 @@ export default class Headroom extends Component {
     pinStart: PropTypes.number,
     style: PropTypes.object,
     calcHeightOnResize: PropTypes.bool,
+    fixedHeight: PropTypes.number,
   };
 
   static defaultProps = {
@@ -36,6 +37,7 @@ export default class Headroom extends Component {
     wrapperStyle: {},
     pinStart: 0,
     calcHeightOnResize: true,
+    fixedHeight: 0,
   };
 
   constructor (props) {
@@ -100,10 +102,12 @@ export default class Headroom extends Component {
   setRef = ref => (this.inner = ref)
 
   setHeightOffset = () => {
-    this.setState({
-      height: this.inner.offsetHeight,
-    })
-    this.resizeTicking = false
+    if (this.props.fixedHeight === 0) {
+      this.setState({
+        height: this.inner.offsetHeight,
+      })
+      this.resizeTicking = false
+    }
   }
 
   getScrollY = () => {
