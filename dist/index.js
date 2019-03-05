@@ -311,7 +311,7 @@ var Headroom = function (_Component) {
       }
 
       var wrapperStyles = _extends({}, wrapperStyle, {
-        height: this.state.height ? this.state.height : null
+        height: this.props.fixedHeight || this.state.height || null
       });
 
       var wrapperClassName = userClassName ? userClassName + ' headroom-wrapper' : 'headroom-wrapper';
