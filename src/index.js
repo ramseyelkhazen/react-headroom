@@ -102,12 +102,10 @@ export default class Headroom extends Component {
   setRef = ref => (this.inner = ref)
 
   setHeightOffset = () => {
-    if (this.props.fixedHeight === 0) {
-      this.setState({
-        height: this.inner.offsetHeight,
-      })
-      this.resizeTicking = false
-    }
+    this.setState({
+      height: this.props.fixedHeight > 0 ? this.props.fixedHeight : this.inner.offsetHeight,
+    })
+    this.resizeTicking = false
   }
 
   getScrollY = () => {
@@ -272,6 +270,7 @@ export default class Headroom extends Component {
     delete divProps.downTolerance
     delete divProps.pinStart
     delete divProps.calcHeightOnResize
+    delete divProps.fixedHeight
 
     const { style, wrapperStyle, ...rest } = divProps
 
@@ -314,7 +313,7 @@ export default class Headroom extends Component {
 
     const wrapperStyles = {
       ...wrapperStyle,
-      height: this.props.fixedHeight || this.state.height || null,
+      height: this.state.height ? this.state.height : null,
     }
 
     const wrapperClassName = userClassName

@@ -55,12 +55,10 @@ var Headroom = function (_Component) {
     };
 
     _this.setHeightOffset = function () {
-      if (_this.props.fixedHeight === 0) {
-        _this.setState({
-          height: _this.inner.offsetHeight
-        });
-        _this.resizeTicking = false;
-      }
+      _this.setState({
+        height: _this.props.fixedHeight > 0 ? _this.props.fixedHeight : _this.inner.offsetHeight
+      });
+      _this.resizeTicking = false;
     };
 
     _this.getScrollY = function () {
@@ -272,6 +270,7 @@ var Headroom = function (_Component) {
       delete divProps.downTolerance;
       delete divProps.pinStart;
       delete divProps.calcHeightOnResize;
+      delete divProps.fixedHeight;
 
       var style = divProps.style,
           wrapperStyle = divProps.wrapperStyle,
@@ -311,7 +310,7 @@ var Headroom = function (_Component) {
       }
 
       var wrapperStyles = _extends({}, wrapperStyle, {
-        height: this.props.fixedHeight || this.state.height || null
+        height: this.state.height ? this.state.height : null
       });
 
       var wrapperClassName = userClassName ? userClassName + ' headroom-wrapper' : 'headroom-wrapper';
