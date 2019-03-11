@@ -281,7 +281,7 @@ var Headroom = function (_Component) {
         top: 0,
         left: 0,
         right: 0,
-        zIndex: 1,
+        zIndex: 999,
         WebkitTransform: 'translate3D(0, ' + this.state.translateY + ', 0)',
         MsTransform: 'translate3D(0, ' + this.state.translateY + ', 0)',
         transform: 'translate3D(0, ' + this.state.translateY + ', 0)'
