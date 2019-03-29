@@ -131,7 +131,7 @@ var Headroom = function (_Component) {
       _this.props.onUnpin();
 
       _this.setState({
-        translateY: '-100%',
+        translateY: _this.props.isFooter ? '100%' : '-100%',
         className: 'headroom headroom--unpinned',
         animation: true,
         state: 'unpinned'
@@ -142,7 +142,7 @@ var Headroom = function (_Component) {
       _this.props.onUnpin();
 
       _this.setState({
-        translateY: '-100%',
+        translateY: _this.props.isFooter ? '100%' : '-100%',
         className: 'headroom headroom--unpinned headroom-disable-animation',
         animation: false,
         state: 'unpinned'
@@ -173,9 +173,11 @@ var Headroom = function (_Component) {
 
     _this.update = function () {
       _this.currentScrollY = _this.getScrollY();
+      _this.scrollerHeight = _this.getScrollerHeight();
+      _this.scrollerPhysicalHeight = _this.getScrollerPhysicalHeight();
 
       if (!_this.isOutOfBound(_this.currentScrollY)) {
-        var _shouldUpdate = (0, _shouldUpdate3.default)(_this.lastKnownScrollY, _this.currentScrollY, _this.props, _this.state),
+        var _shouldUpdate = (0, _shouldUpdate3.default)(_this.lastKnownScrollY, _this.currentScrollY, _this.props, _this.state, _this.scrollerHeight, _this.scrollerPhysicalHeight),
             action = _shouldUpdate.action;
 
         if (action === 'pin') {
@@ -198,7 +200,7 @@ var Headroom = function (_Component) {
     _this.scrollTicking = false;
     _this.resizeTicking = false;
     _this.state = {
-      state: 'unfixed',
+      state: props.isFooter ? 'pinned' : 'unfixed',
       translateY: 0,
       className: 'headroom headroom--unfixed'
     };
@@ -271,6 +273,7 @@ var Headroom = function (_Component) {
       delete divProps.pinStart;
       delete divProps.calcHeightOnResize;
       delete divProps.fixedHeight;
+      delete divProps.isFooter;
 
       var style = divProps.style,
           wrapperStyle = divProps.wrapperStyle,
@@ -278,7 +281,8 @@ var Headroom = function (_Component) {
 
       var innerStyle = {
         position: this.props.disable || this.state.state === 'unfixed' ? 'relative' : 'fixed',
-        top: 0,
+        top: this.props.isFooter ? 'unset' : '0',
+        bottom: this.props.isFooter ? 0 : 'unset',
         left: 0,
         right: 0,
         zIndex: 999,
@@ -350,7 +354,8 @@ Headroom.propTypes = {
   pinStart: _propTypes2.default.number,
   style: _propTypes2.default.object,
   calcHeightOnResize: _propTypes2.default.bool,
-  fixedHeight: _propTypes2.default.number
+  fixedHeight: _propTypes2.default.number,
+  isFooter: _propTypes2.default.bool
 };
 Headroom.defaultProps = {
   parent: function parent() {
@@ -366,6 +371,7 @@ Headroom.defaultProps = {
   wrapperStyle: {},
   pinStart: 0,
   calcHeightOnResize: true,
-  fixedHeight: 0
+  fixedHeight: 0,
+  isFooter: false
 };
 exports.default = Headroom;

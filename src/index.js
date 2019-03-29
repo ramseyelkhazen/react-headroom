@@ -23,6 +23,7 @@ export default class Headroom extends Component {
     style: PropTypes.object,
     calcHeightOnResize: PropTypes.bool,
     fixedHeight: PropTypes.number,
+    isFooter: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -38,6 +39,7 @@ export default class Headroom extends Component {
     pinStart: 0,
     calcHeightOnResize: true,
     fixedHeight: 0,
+    isFooter: false,
   };
 
   constructor (props) {
@@ -48,7 +50,7 @@ export default class Headroom extends Component {
     this.scrollTicking = false
     this.resizeTicking = false
     this.state = {
-      state: 'unfixed',
+      state: props.isFooter ? 'pinned' : 'unfixed',
       translateY: 0,
       className: 'headroom headroom--unfixed',
     }
@@ -191,7 +193,7 @@ export default class Headroom extends Component {
     this.props.onUnpin()
 
     this.setState({
-      translateY: '-100%',
+      translateY: this.props.isFooter ? '100%' : '-100%',
       className: 'headroom headroom--unpinned',
       animation: true,
       state: 'unpinned',
@@ -202,7 +204,7 @@ export default class Headroom extends Component {
     this.props.onUnpin()
 
     this.setState({
-      translateY: '-100%',
+      translateY: this.props.isFooter ? '100%' : '-100%',
       className: 'headroom headroom--unpinned headroom-disable-animation',
       animation: false,
       state: 'unpinned',
@@ -233,13 +235,17 @@ export default class Headroom extends Component {
 
   update = () => {
     this.currentScrollY = this.getScrollY()
+    this.scrollerHeight = this.getScrollerHeight()
+    this.scrollerPhysicalHeight = this.getScrollerPhysicalHeight()
 
     if (!this.isOutOfBound(this.currentScrollY)) {
       const { action } = shouldUpdate(
         this.lastKnownScrollY,
         this.currentScrollY,
         this.props,
-        this.state
+        this.state,
+        this.scrollerHeight,
+        this.scrollerPhysicalHeight
       )
 
       if (action === 'pin') {
@@ -271,12 +277,14 @@ export default class Headroom extends Component {
     delete divProps.pinStart
     delete divProps.calcHeightOnResize
     delete divProps.fixedHeight
+    delete divProps.isFooter
 
     const { style, wrapperStyle, ...rest } = divProps
 
     let innerStyle = {
       position: this.props.disable || this.state.state === 'unfixed' ? 'relative' : 'fixed',
-      top: 0,
+      top: this.props.isFooter ? 'unset' : '0',
+      bottom: this.props.isFooter ? 0 : 'unset',
       left: 0,
       right: 0,
       zIndex: 999,

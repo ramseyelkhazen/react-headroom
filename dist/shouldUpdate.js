@@ -9,6 +9,8 @@ exports.default = function () {
   var currentScrollY = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 0;
   var props = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
   var state = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
+  var scrollerHeight = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : 0;
+  var scrollerPhysicalHeight = arguments.length > 5 && arguments[5] !== void 0 ? arguments[5] : 0;
 
   var scrollDirection = currentScrollY >= lastKnownScrollY ? 'down' : 'up';
   var distanceScrolled = Math.abs(currentScrollY - lastKnownScrollY);
@@ -19,9 +21,16 @@ exports.default = function () {
       action: 'none',
       scrollDirection: scrollDirection,
       distanceScrolled: distanceScrolled
+    };
+  } else if (props.isFooter && currentScrollY <= props.pinStart && state.state !== 'pinned') {
+    // We're a footer and at the top so should be pinned
+    return {
+      action: 'pin',
+      scrollDirection: scrollDirection,
+      distanceScrolled: distanceScrolled
       // We're at the top and not fixed yet.
     };
-  } else if (currentScrollY <= props.pinStart && state.state !== 'unfixed') {
+  } else if (!props.isFooter && currentScrollY <= props.pinStart && state.state !== 'unfixed') {
     return {
       action: 'unfix',
       scrollDirection: scrollDirection,
@@ -42,9 +51,18 @@ exports.default = function () {
       // We're past the header and scrolling down.
       // We transition to "unpinned" if necessary.
     };
-  } else if (scrollDirection === 'down' && ['pinned', 'unfixed'].indexOf(state.state) >= 0 && currentScrollY > state.height + props.pinStart && distanceScrolled > props.downTolerance) {
+  } else if (scrollDirection === 'down' && ['pinned', 'unfixed'].indexOf(state.state) >= 0 && currentScrollY > state.height + props.pinStart && distanceScrolled > props.downTolerance && (
+  // Don't unpin if we are a footer and at the bottom
+  !props.isFooter || currentScrollY + scrollerPhysicalHeight < scrollerHeight - state.height)) {
     return {
       action: 'unpin',
+      scrollDirection: scrollDirection,
+      distanceScrolled: distanceScrolled
+      // We're a footer and have reached the bottom
+    };
+  } else if (props.isFooter && currentScrollY + scrollerPhysicalHeight >= scrollerHeight - state.height && state.state !== 'pinned') {
+    return {
+      action: 'pin',
       scrollDirection: scrollDirection,
       distanceScrolled: distanceScrolled
       // We're scrolling up, we transition to "pinned"
