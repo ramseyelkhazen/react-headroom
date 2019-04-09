@@ -281,9 +281,13 @@ export default class Headroom extends Component {
 
     const { style, wrapperStyle, ...rest } = divProps
 
+    let top = 0
+    if (this.props.isFooter) top = 'unset'
+    else if (this.state.state === 'pinned') top = this.props.pinStart
+
     let innerStyle = {
       position: this.props.disable || this.state.state === 'unfixed' ? 'relative' : 'fixed',
-      top: this.props.isFooter ? 'unset' : '0',
+      top,
       bottom: this.props.isFooter ? 0 : 'unset',
       left: 0,
       right: 0,

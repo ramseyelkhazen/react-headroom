@@ -279,9 +279,12 @@ var Headroom = function (_Component) {
           wrapperStyle = divProps.wrapperStyle,
           rest = _objectWithoutProperties(divProps, ['style', 'wrapperStyle']);
 
+      var top = 0;
+      if (this.props.isFooter) top = 'unset';else if (this.state.state === 'pinned') top = this.props.pinStart;
+
       var innerStyle = {
         position: this.props.disable || this.state.state === 'unfixed' ? 'relative' : 'fixed',
-        top: this.props.isFooter ? 'unset' : '0',
+        top: top,
         bottom: this.props.isFooter ? 0 : 'unset',
         left: 0,
         right: 0,

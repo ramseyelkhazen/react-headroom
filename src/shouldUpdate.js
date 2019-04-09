@@ -24,7 +24,7 @@ export default function (
       distanceScrolled,
     }
     // We're at the top and not fixed yet.
-  } else if (!props.isFooter && currentScrollY <= props.pinStart && state.state !== 'unfixed') {
+  } else if (!props.isFooter && currentScrollY <= 0 && state.state !== 'unfixed') {
     return {
       action: 'unfix',
       scrollDirection,
@@ -56,7 +56,7 @@ export default function (
   } else if (
     scrollDirection === 'down' &&
     ['pinned', 'unfixed'].indexOf(state.state) >= 0 &&
-    currentScrollY > (state.height + props.pinStart) && distanceScrolled > props.downTolerance &&
+    currentScrollY > state.height && distanceScrolled > props.downTolerance &&
     // Don't unpin if we are a footer and at the bottom
     (!props.isFooter || currentScrollY + scrollerPhysicalHeight < scrollerHeight - state.height)
   ) {

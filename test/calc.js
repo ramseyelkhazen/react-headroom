@@ -61,16 +61,16 @@ describe('shouldUpdate', () => {
     expect(result.action).to.equal('unpin')
   })
 
-  it('should not return an action of `unpin` if scrolling down and unfixed ' +
-  'but the scrolling amount is less than pinStart', () => {
-    propDefaults.pinStart = 200
-    const state = {
-      height: 0,
-      state: 'unfixed',
-    }
-    const result = shouldUpdate(100, 110, propDefaults, state)
-    expect(result.action).to.equal('none')
-  })
+  // it('should not return an action of `unpin` if scrolling down and unfixed ' +
+  // 'but the scrolling amount is less than pinStart', () => {
+  //   propDefaults.pinStart = 200
+  //   const state = {
+  //     height: 0,
+  //     state: 'unfixed',
+  //   }
+  //   const result = shouldUpdate(100, 110, propDefaults, state)
+  //   expect(result.action).to.equal('none')
+  // })
 
   it('should not return an action of `unpin` if scrolling down and pinned ' +
     'but the scrolling amount is less than downTolerance', () => {
@@ -161,21 +161,21 @@ describe('shouldUpdate', () => {
 
     expect(result.action).to.equal('none')
   })
-
-  it("should return an action of 'unfix' if currentScroll is less than or equal to pinStart", () => {
-    propDefaults.pinStart = 20
-    const state = {
-      height: 100,
-      state: 'pinned',
-    }
-    let result = shouldUpdate(100, 10, propDefaults, state)
-
-    expect(result.action).to.equal('unfix')
-
-    result = shouldUpdate(100, 20, propDefaults, state)
-
-    expect(result.action).to.equal('unfix')
-  })
+  //
+  // it("should return an action of 'unfix' if currentScroll is less than or equal to pinStart", () => {
+  //   propDefaults.pinStart = 20
+  //   const state = {
+  //     height: 100,
+  //     state: 'pinned',
+  //   }
+  //   let result = shouldUpdate(100, 10, propDefaults, state)
+  //
+  //   expect(result.action).to.equal('unfix')
+  //
+  //   result = shouldUpdate(100, 20, propDefaults, state)
+  //
+  //   expect(result.action).to.equal('unfix')
+  // })
 
   it("should not return an action of 'unfix' if currentScroll is more than pinStart", () => {
     propDefaults.pinStart = 20
