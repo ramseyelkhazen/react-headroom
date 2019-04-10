@@ -160,6 +160,15 @@ var Headroom = function (_Component) {
       });
     };
 
+    _this.fix = function () {
+      _this.setState({
+        translateY: '-100%',
+        className: 'headroom headroom--fixed',
+        animation: true,
+        state: 'fixed'
+      });
+    };
+
     _this.unfix = function () {
       _this.props.onUnfix();
 
@@ -186,6 +195,8 @@ var Headroom = function (_Component) {
           _this.unpin();
         } else if (action === 'unpin-snap') {
           _this.unpinSnap();
+        } else if (action === 'fix') {
+          _this.fix();
         } else if (action === 'unfix') {
           _this.unfix();
         }
@@ -274,16 +285,22 @@ var Headroom = function (_Component) {
       delete divProps.calcHeightOnResize;
       delete divProps.fixedHeight;
       delete divProps.isFooter;
+      delete divProps.sticky;
 
       var style = divProps.style,
           wrapperStyle = divProps.wrapperStyle,
           rest = _objectWithoutProperties(divProps, ['style', 'wrapperStyle']);
 
+      var position = 'fixed';
+      if (this.props.disable) position = 'relative';else if (this.state.state === 'unfixed' && this.props.sticky) position = 'sticky';else if (this.state.state === 'unfixed') position = 'relative';
+
       var top = 0;
-      if (this.props.isFooter) top = 'unset';else if (this.state.state === 'pinned') top = this.props.pinStart;
+      if (this.props.isFooter) top = 'unset';else if (this.props.sticky && ['unfixed', 'fixed'].indexOf(this.state.state) >= 0) {
+        top = this.props.pinStart - (this.state.height || 0);
+      } else if (this.state.state === 'pinned') top = this.props.pinStart;
 
       var innerStyle = {
-        position: this.props.disable || this.state.state === 'unfixed' ? 'relative' : 'fixed',
+        position: position,
         top: top,
         bottom: this.props.isFooter ? 0 : 'unset',
         left: 0,
@@ -358,7 +375,8 @@ Headroom.propTypes = {
   style: _propTypes2.default.object,
   calcHeightOnResize: _propTypes2.default.bool,
   fixedHeight: _propTypes2.default.number,
-  isFooter: _propTypes2.default.bool
+  isFooter: _propTypes2.default.bool,
+  sticky: _propTypes2.default.bool
 };
 Headroom.defaultProps = {
   parent: function parent() {
@@ -375,6 +393,7 @@ Headroom.defaultProps = {
   pinStart: 0,
   calcHeightOnResize: true,
   fixedHeight: 0,
-  isFooter: false
+  isFooter: false,
+  sticky: false
 };
 exports.default = Headroom;

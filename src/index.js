@@ -24,6 +24,7 @@ export default class Headroom extends Component {
     calcHeightOnResize: PropTypes.bool,
     fixedHeight: PropTypes.number,
     isFooter: PropTypes.bool,
+    sticky: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -40,6 +41,7 @@ export default class Headroom extends Component {
     calcHeightOnResize: true,
     fixedHeight: 0,
     isFooter: false,
+    sticky: false,
   };
 
   constructor (props) {
@@ -222,6 +224,15 @@ export default class Headroom extends Component {
     })
   }
 
+  fix = () => {
+    this.setState({
+      translateY: '-100%',
+      className: 'headroom headroom--fixed',
+      animation: true,
+      state: 'fixed',
+    })
+  }
+
   unfix = () => {
     this.props.onUnfix()
 
@@ -254,6 +265,8 @@ export default class Headroom extends Component {
         this.unpin()
       } else if (action === 'unpin-snap') {
         this.unpinSnap()
+      } else if (action === 'fix') {
+        this.fix()
       } else if (action === 'unfix') {
         this.unfix()
       }
@@ -278,15 +291,23 @@ export default class Headroom extends Component {
     delete divProps.calcHeightOnResize
     delete divProps.fixedHeight
     delete divProps.isFooter
+    delete divProps.sticky
 
     const { style, wrapperStyle, ...rest } = divProps
 
+    let position = 'fixed'
+    if (this.props.disable) position = 'relative'
+    else if (this.state.state === 'unfixed' && this.props.sticky) position = 'sticky'
+    else if (this.state.state === 'unfixed') position = 'relative'
+
     let top = 0
     if (this.props.isFooter) top = 'unset'
-    else if (this.state.state === 'pinned') top = this.props.pinStart
+    else if (this.props.sticky && ['unfixed', 'fixed'].indexOf(this.state.state) >= 0) {
+      top = this.props.pinStart - (this.state.height || 0)
+    } else if (this.state.state === 'pinned') top = this.props.pinStart
 
     let innerStyle = {
-      position: this.props.disable || this.state.state === 'unfixed' ? 'relative' : 'fixed',
+      position,
       top,
       bottom: this.props.isFooter ? 0 : 'unset',
       left: 0,

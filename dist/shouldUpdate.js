@@ -48,6 +48,12 @@ exports.default = function () {
       action: 'unpin-snap',
       scrollDirection: scrollDirection,
       distanceScrolled: distanceScrolled
+    };
+  } else if (scrollDirection === 'down' && state.state !== 'fixed' && currentScrollY > state.height + props.pinStart && distanceScrolled > props.downTolerance && props.sticky) {
+    return {
+      action: 'fix',
+      scrollDirection: scrollDirection,
+      distanceScrolled: distanceScrolled
       // We're past the header and scrolling down.
       // We transition to "unpinned" if necessary.
     };
@@ -55,7 +61,7 @@ exports.default = function () {
   // Don't unpin if we are a footer and at the bottom
   !props.isFooter || currentScrollY + scrollerPhysicalHeight < scrollerHeight - state.height)) {
     return {
-      action: 'unpin',
+      action: props.sticky ? 'fix' : 'unpin',
       scrollDirection: scrollDirection,
       distanceScrolled: distanceScrolled
       // We're a footer and have reached the bottom

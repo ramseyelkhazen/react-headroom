@@ -51,6 +51,12 @@ export default function (
       scrollDirection,
       distanceScrolled,
     }
+  } else if (scrollDirection === 'down' && state.state !== 'fixed' && currentScrollY > state.height + props.pinStart && distanceScrolled > props.downTolerance && props.sticky) {
+    return {
+      action: 'fix',
+      scrollDirection,
+      distanceScrolled,
+    }
   // We're past the header and scrolling down.
   // We transition to "unpinned" if necessary.
   } else if (
@@ -61,7 +67,7 @@ export default function (
     (!props.isFooter || currentScrollY + scrollerPhysicalHeight < scrollerHeight - state.height)
   ) {
     return {
-      action: 'unpin',
+      action: props.sticky ? 'fix' : 'unpin',
       scrollDirection,
       distanceScrolled,
     }
