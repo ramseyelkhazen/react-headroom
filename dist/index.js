@@ -286,6 +286,7 @@ var Headroom = function (_Component) {
       delete divProps.fixedHeight;
       delete divProps.isFooter;
       delete divProps.sticky;
+      delete divProps.zOrder;
 
       var style = divProps.style,
           wrapperStyle = divProps.wrapperStyle,
@@ -305,7 +306,7 @@ var Headroom = function (_Component) {
         bottom: this.props.isFooter ? 0 : 'unset',
         left: 0,
         right: 0,
-        zIndex: 999,
+        zIndex: 999 - this.props.zOrder,
         WebkitTransform: 'translate3D(0, ' + this.state.translateY + ', 0)',
         MsTransform: 'translate3D(0, ' + this.state.translateY + ', 0)',
         transform: 'translate3D(0, ' + this.state.translateY + ', 0)'
@@ -376,7 +377,8 @@ Headroom.propTypes = {
   calcHeightOnResize: _propTypes2.default.bool,
   fixedHeight: _propTypes2.default.number,
   isFooter: _propTypes2.default.bool,
-  sticky: _propTypes2.default.bool
+  sticky: _propTypes2.default.bool,
+  zOrder: _propTypes2.default.number
 };
 Headroom.defaultProps = {
   parent: function parent() {
@@ -394,6 +396,7 @@ Headroom.defaultProps = {
   calcHeightOnResize: true,
   fixedHeight: 0,
   isFooter: false,
-  sticky: false
+  sticky: false,
+  zOrder: 10
 };
 exports.default = Headroom;

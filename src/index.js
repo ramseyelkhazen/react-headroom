@@ -25,6 +25,7 @@ export default class Headroom extends Component {
     fixedHeight: PropTypes.number,
     isFooter: PropTypes.bool,
     sticky: PropTypes.bool,
+    zOrder: PropTypes.number,
   };
 
   static defaultProps = {
@@ -42,6 +43,7 @@ export default class Headroom extends Component {
     fixedHeight: 0,
     isFooter: false,
     sticky: false,
+    zOrder: 10,
   };
 
   constructor (props) {
@@ -292,6 +294,7 @@ export default class Headroom extends Component {
     delete divProps.fixedHeight
     delete divProps.isFooter
     delete divProps.sticky
+    delete divProps.zOrder
 
     const { style, wrapperStyle, ...rest } = divProps
 
@@ -312,7 +315,7 @@ export default class Headroom extends Component {
       bottom: this.props.isFooter ? 0 : 'unset',
       left: 0,
       right: 0,
-      zIndex: 999,
+      zIndex: 999 - this.props.zOrder,
       WebkitTransform: `translate3D(0, ${this.state.translateY}, 0)`,
       MsTransform: `translate3D(0, ${this.state.translateY}, 0)`,
       transform: `translate3D(0, ${this.state.translateY}, 0)`,
