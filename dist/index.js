@@ -295,6 +295,16 @@ var Headroom = function (_Component) {
       var position = 'fixed';
       if (this.props.disable) position = 'relative';else if (this.state.state === 'unfixed' && this.props.sticky) position = 'sticky';else if (this.state.state === 'unfixed') position = 'relative';
 
+      // Detect if browser supports sticky feature
+      if (position === 'sticky') {
+        var prefix = ['', '-o-', '-webkit-', '-moz-', '-ms-'];
+        var test = document.head.style;
+        for (var i = 0; i < prefix.length; i += 1) {
+          test.position = prefix[i] + 'sticky';
+        }
+        position = test.position ? test.position : 'fixed';
+      }
+
       var top = 0;
       if (this.props.isFooter) top = 'unset';else if (this.props.sticky && ['unfixed', 'fixed'].indexOf(this.state.state) >= 0) {
         top = this.props.pinStart - (this.state.height || 0);
